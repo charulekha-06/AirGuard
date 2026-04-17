@@ -250,44 +250,41 @@ export default function App() {
               
               {/* Leak Event Visual Annotations */}
               {leakEvents.map(event => {
-                // Determine visibility in current historical window
+                const firstTime = historicalData.length > 0 ? historicalData[0].time : null;
+                const inWindow = historicalData.some(d => d.time === event.startTime);
+                if (!inWindow) return null;
+                return (
+                  <ReferenceLine 
+                    key={`line-${event.id}`} 
+                    x={event.startTime} 
+                    stroke="var(--accent-red)" 
+                    strokeDasharray="5 5"
+                    label={{ value: 'Leak Detected', position: 'top', fill: 'var(--accent-red)', fontSize: 10, fontWeight: 'bold' }}
+                    isFront={false}
+                  />
+                );
+              })}
+              {leakEvents.map(event => {
                 const firstTime = historicalData.length > 0 ? historicalData[0].time : null;
                 const lastTime = historicalData.length > 0 ? historicalData[historicalData.length - 1].time : null;
-                const inWindow = (time: string) => historicalData.some(d => d.time === time);
                 
-                const showLine = inWindow(event.startTime);
-                
-                // For area, we show it if the leak interval overlaps with the historical window
-                // Interval is [startTime, endTime || lastTime]
-                // Simplest way: if startTime is in window OR endTime is in window OR (startTime before window AND (no endTime OR endTime after window))
                 const startIdx = historicalData.findIndex(d => d.time === event.startTime);
                 const endIdx = event.endTime ? historicalData.findIndex(d => d.time === event.endTime) : historicalData.length - 1;
 
-                // If neither in window, and leak didn't span across the window, don't show area
                 const showArea = startIdx !== -1 || endIdx !== -1 || (event.startTime < (firstTime || '') && (!event.endTime || event.endTime > (lastTime || '')));
 
+                if (!showArea) return null;
+
                 return (
-                  <g key={`leak-viz-${event.id}`}>
-                    {showLine && (
-                      <ReferenceLine 
-                        x={event.startTime} 
-                        stroke="var(--accent-red)" 
-                        strokeDasharray="5 5"
-                        label={{ value: 'Leak Detected', position: 'top', fill: 'var(--accent-red)', fontSize: 10, fontWeight: 'bold' }}
-                        isFront={false}
-                      />
-                    )}
-                    {showArea && (
-                      <ReferenceArea 
-                        x1={startIdx !== -1 ? event.startTime : firstTime} 
-                        x2={endIdx !== -1 ? (event.endTime || lastTime) : lastTime} 
-                        fill="var(--accent-red)" 
-                        fillOpacity={0.15} 
-                        stroke="none"
-                        isFront={false}
-                      />
-                    )}
-                  </g>
+                  <ReferenceArea 
+                    key={`area-${event.id}`} 
+                    x1={startIdx !== -1 ? event.startTime : firstTime} 
+                    x2={endIdx !== -1 ? (event.endTime || lastTime) : lastTime} 
+                    fill="var(--accent-red)" 
+                    fillOpacity={0.15} 
+                    stroke="none"
+                    isFront={false}
+                  />
                 );
               })}
 
