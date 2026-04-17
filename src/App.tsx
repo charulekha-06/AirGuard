@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AlertTriangle, CheckCircle, ArrowDownRight, ArrowUpRight, ShieldAlert } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './App.css';
 
 // Type definitions
@@ -218,7 +218,7 @@ export default function App() {
       </nav>
 
       <section className="chart-section">
-        <div className="panel-title" style={{borderBottom: 'none'}}>Sensor Trends (MAP & MAF)</div>
+        <div className="panel-title" style={{borderBottom: 'none'}}>Sensor Trends (MAP, MAF & EBP)</div>
         <div className="chart-container">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={historicalData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
@@ -230,7 +230,9 @@ export default function App() {
                 contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: '1px solid #333' }}
                 itemStyle={{ color: '#fff' }}
               />
+              <Legend verticalAlign="top" height={36}/>
               <Line yAxisId="left" type="monotone" dataKey="MAP" stroke="var(--accent-red)" strokeWidth={2} dot={false} isAnimationActive={false} />
+              <Line yAxisId="left" type="monotone" dataKey="EBP" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
               <Line yAxisId="right" type="monotone" dataKey="MAF" stroke="var(--success-green)" strokeWidth={2} dot={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
