@@ -282,7 +282,7 @@ export default function App() {
                         x1={startIdx !== -1 ? event.startTime : firstTime} 
                         x2={endIdx !== -1 ? (event.endTime || lastTime) : lastTime} 
                         fill="var(--accent-red)" 
-                        fillOpacity={0.15} 
+                        fillOpacity={0.3} 
                         stroke="none"
                         isFront={false}
                       />
