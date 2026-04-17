@@ -293,14 +293,26 @@ export default function App() {
 
               {/* Current Scan Position Line */}
               {historicalData.length > 0 && (
-                <ReferenceLine 
-                  x={historicalData[historicalData.length - 1].time} 
-                  stroke="#fff" 
-                  strokeWidth={2}
-                  strokeOpacity={0.5}
-                  label={{ value: 'LIVE SCAN', position: 'insideTopRight', fill: '#fff', fontSize: 10, fontWeight: 'bold', offset: 10 }}
-                  isFront={true}
-                />
+                <>
+                  <ReferenceLine 
+                    x={historicalData[historicalData.length - 1].time} 
+                    stroke="#fff" 
+                    strokeWidth={2}
+                    strokeOpacity={0.5}
+                    label={{ value: 'LIVE SCAN', position: 'insideTopRight', fill: '#fff', fontSize: 10, fontWeight: 'bold', offset: 10 }}
+                    isFront={true}
+                  />
+                  {historicalData.length > 1 && (
+                    <ReferenceLine 
+                      x={historicalData[historicalData.length - 2].time} 
+                      stroke="#22d3ee" 
+                      strokeWidth={2}
+                      strokeOpacity={0.8}
+                      label={{ value: 'ANALYSIS POINT', position: 'insideBottomRight', fill: '#22d3ee', fontSize: 10, fontWeight: 'bold' }}
+                      isFront={true}
+                    />
+                  )}
+                </>
               )}
 
               <Line yAxisId="left" type="monotone" dataKey="MAP" stroke="var(--accent-red)" strokeWidth={2} dot={false} isAnimationActive={false} />
