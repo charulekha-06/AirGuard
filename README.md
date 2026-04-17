@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# 🛡️ AirGuard AI
+**High-Fidelity Industrial AI Sensor Dashboard**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AirGuard AI is a production-grade prototype application designed to monitor engine test-cell environments in real-time. It leverages a Python-based intelligence backend (Machine Learning) connected via API to a high-contrast, industrial React frontend.
 
-Currently, two official plugins are available:
+The application detects, localizes, and classifies mechanical system leaks based on live sensor telemetry using a trained Random Forest model.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Key Features
 
-## React Compiler
+* **Real-time Telemetry Processing**: Polls the backend every second to ingest high-frequency data for `MAF` (Airflow), `MAP` (Pressure), `EBP` (Exhaust), `EGT` (Temperature), and `Lambda`.
+* **Flow Diagnostics Sandbox**: A fully animated `Intake → CAC → Engine → Exhaust` fluid pipeline that visually pulses isolated fault zones.
+* **Auto Model-Training**: The FastAPI backend inherently fetches `advanced training dataset.xlsx` using pandas to construct and train a `scikit-learn` classification model upon instantiation.
+* **Alert Sequence Protocol**: An integrated CSS alarm suite triggers immediate aesthetic changes (Red glows, pulsating borders, status banners) when anomalies are classified.
+* **Intelligent Intervention**: Produces statistical confidence matrices (%) and recommended engineer actions.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 💻 Tech Stack
+**Frontend Intelligence**
+* Framework: `React 18` + `Vite` + `TypeScript`
+* UI Charting: `Recharts`
+* Typography: `Space Grotesk` & `Orbitron` Google Fonts
+* Icons: `lucide-react`
 
-## Expanding the ESLint configuration
+**Backend Intelligence**
+* Environment: `Python 3`
+* Server: `FastAPI` + `uvicorn`
+* Classification Intelligence: `scikit-learn` (RandomForestClassifier)
+* Data Formatting: `pandas`, `numpy`, `openpyxl`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ How to Run Locally
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Because AirGuard relies on an ML model pipeline, ensure both the backend and frontend are running simultaneously.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 1. Start the Machine Learning Backend
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Open a terminal and navigate to the project root:
+
+```bash
+# 1. Create a virtual environment
+python3 -m venv venv
+
+# 2. Activate the virtual environment
+source venv/bin/activate
+
+# 3. Install requirements
+pip install -r requirements.txt
+
+# 4. Boot the FastAPI Server
+python api.py
+```
+*The API will train the model instantly and launch on `http://localhost:8000`.*
+
+### 2. Start the Frontend Dashboard
+
+Open a **new** terminal window and navigate to the project root:
+
+```bash
+# 1. Install Node dependencies
+npm install
+
+# 2. Launch the Vite Development Server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+*The frontend UI will initialize, usually binding to `http://localhost:5173`.*
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+*Created for industrial telemetry & leak identification scoping.*
