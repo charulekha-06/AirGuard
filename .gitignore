@@ -27,3 +27,8 @@ dist-ssr
 venv/
 __pycache__/
 *.pyc
+
+# Local Environment
+node-env/
+repo.zip
+.gemini/

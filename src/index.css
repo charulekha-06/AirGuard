@@ -22,6 +22,8 @@ body, html {
   font-family: var(--font-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  overflow: hidden;
 }
 
 *, *::before, *::after {

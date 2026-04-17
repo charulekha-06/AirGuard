@@ -119,12 +119,18 @@ export default function App() {
 
   return (
     <div className={`app-container ${isLeakDetected ? 'alert-mode' : ''}`}>
-      {isLeakDetected && (
-        <div className="top-banner-alert alert-text-blink">
-          <AlertTriangle style={{display: 'inline', verticalAlign: 'middle', marginRight: '8px'}}/>
-          CRITICAL LEAK DETECTED: {prediction.leak_type_name}
+      <div className={`banner-container ${isLeakDetected ? 'active' : ''}`}>
+        <div className={`top-banner-alert ${isLeakDetected ? 'alert-text-blink' : ''}`}>
+          {isLeakDetected ? (
+            <>
+              <AlertTriangle style={{display: 'inline', verticalAlign: 'middle', marginRight: '8px'}}/>
+              CRITICAL LEAK DETECTED: {prediction.leak_type_name}
+            </>
+          ) : (
+            <>SYSTEM STATUS: ONLINE | AI MONITOR ACTIVE</>
+          )}
         </div>
-      )}
+      </div>
 
       <nav className="navbar">
         <div className={`brand ${isLeakDetected ? 'alert' : ''}`}>
