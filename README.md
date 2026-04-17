@@ -1,73 +1,68 @@
-# React + TypeScript + Vite
+# AirGuard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AirGuard is a comprehensive system designed to monitor engine sensor data and predict potential leaks in real-time. It consists of a React-based frontend dashboard for visualization and a Python/FastAPI backend powered by a machine learning model to classify leak types.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Real-Time Sensor Simulation:** Generates simulated engine sensor data, including RPM, Mass Air Flow (MAF), Manifold Absolute Pressure (MAP), Exhaust Back Pressure (EBP), Exhaust Gas Temperature (EGT), and Lambda.
+- **Machine Learning Leak Detection:** Utilizes a Random Forest Classifier trained on engine data to detect and classify anomalies such as Intake Leaks, Charge Air Cooler (CAC) Leaks, and Exhaust Leaks.
+- **Interactive Dashboard:** Visualizes the sensor data and prediction results, displaying leak severity, location, and recommended actions using intuitive charts and UI components.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+- **Framework:** React 19 with Vite
+- **Language:** TypeScript
+- **Styling:** CSS / Tailwind Utilities (`clsx`, `tailwind-merge`)
+- **Icons:** Lucide React
+- **Charts:** Recharts
 
-## Expanding the ESLint configuration
+### Backend
+- **Framework:** FastAPI
+- **Language:** Python 3
+- **Machine Learning:** Scikit-Learn (Random Forest)
+- **Data Processing:** Pandas, NumPy
+- **Server:** Uvicorn
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- [Node.js](https://nodejs.org/) (for the frontend)
+- [Python 3.8+](https://www.python.org/) (for the backend)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Backend Setup
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Open a terminal and navigate to the project directory.
+2. Install the required Python packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Start the FastAPI backend server:
+   ```bash
+   python api.py
+   ```
+   *The server will start on `http://localhost:8000`. The machine learning model will be trained automatically on startup using the `advanced training dataset.xlsx` file.*
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Frontend Setup
+
+1. Open a new terminal and navigate to the project directory.
+2. Install the frontend dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
+   *The frontend application will be available at `http://localhost:5173` (or the port specified by Vite).*
+
+## Project Structure
+
+- `api.py`: The FastAPI application and machine learning model implementation.
+- `requirements.txt`: Python dependencies for the backend.
+- `advanced training dataset.xlsx`: The dataset used to train the Random Forest model on startup.
+- `src/`: Contains the React frontend source code, including components, styles, and the main application logic (`App.tsx`).
+- `package.json`: Node.js dependencies and scripts for the frontend.
