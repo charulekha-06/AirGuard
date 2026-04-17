@@ -3,7 +3,7 @@
 
 ---
 
-## 🧠 Overview
+##  Overview
 
 AirGuard AI is a real-time monitoring system designed to detect and localize air and exhaust leaks in engine test cells using existing sensor data.
 
@@ -11,7 +11,7 @@ It combines physics-based feature engineering with machine learning to provide a
 
 ---
 
-## 🎯 Problem Statement
+##  Problem Statement
 
 Engine test cells often experience hidden air or exhaust leaks that lead to:
 
@@ -24,7 +24,7 @@ Traditional detection methods are manual, slow, and unreliable.
 
 ---
 
-## 💡 Solution
+##  Solution
 
 AirGuard AI provides:
 
@@ -37,7 +37,7 @@ All using existing sensor data and lightweight edge processing.
 
 ---
 
-## ⚙️ System Architecture
+##  System Architecture
 Sensor Data → Feature Engineering → Anomaly Detection → Leak Classification → Output Decision
 
 
@@ -85,7 +85,7 @@ The dataset is **simulation-based** and includes:
 
 ---
 
-## 🧠 Machine Learning Approach
+##  Machine Learning Approach
 
 ### 1. Anomaly Detection
 - **Model**: Isolation Forest
@@ -104,7 +104,7 @@ Action: Inspect Intake System
 
 ---
 
-## 🖥️ Frontend (Prototype)
+##  Frontend (Prototype)
 
 A high-fidelity UI dashboard was developed using a red, black, and white industrial theme.
 
@@ -116,7 +116,7 @@ A high-fidelity UI dashboard was developed using a red, black, and white industr
 
 ---
 
-## 🚀 Deployment
+##  Deployment
 
 - Runs on edge devices (e.g., Raspberry Pi)
 - No additional hardware required
@@ -125,7 +125,7 @@ A high-fidelity UI dashboard was developed using a red, black, and white industr
 
 ---
 
-## 💡 Key Innovations
+##  Key Innovations
 
 - Hybrid approach: Physics + Machine Learning
 - No additional hardware requirement
@@ -134,7 +134,7 @@ A high-fidelity UI dashboard was developed using a red, black, and white industr
 
 ---
 
-## ⚠️ Limitations
+##  Limitations
 
 - Dataset is simulation-based
 - Real-world validation required
@@ -142,7 +142,7 @@ A high-fidelity UI dashboard was developed using a red, black, and white industr
 
 ---
 
-## 🔮 Future Work
+##  Future Work
 
 - Integration with real test cell data
 - Expansion to finer leak localization (multi-zone detection)
@@ -151,7 +151,7 @@ A high-fidelity UI dashboard was developed using a red, black, and white industr
 
 ---
 
-## 🏆 Impact
+##  Impact
 
 AirGuard AI enables:
 
@@ -162,7 +162,7 @@ AirGuard AI enables:
 
 ---
 
-## 📌 Conclusion
+##  Conclusion
 
 AirGuard AI transforms raw sensor data into actionable insights, enabling faster, smarter, and more reliable leak detection in industrial environments.
 
