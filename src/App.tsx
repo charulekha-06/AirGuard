@@ -22,6 +22,56 @@ type PredictionResult = {
   is_leak: boolean;
 };
 
+type LeakEvent = {
+  id: number;
+  time: string;
+  type: string;
+  location: string;
+  confidence: number | string;
+  action: string;
+};
+
+const LeakDataTable = ({ events }: { events: LeakEvent[] }) => {
+  return (
+    <div className="leak-table-container">
+      <table className="leak-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Location</th>
+            <th>Confidence</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {events.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="empty-state">No leaks detected in the current session</td>
+            </tr>
+          ) : (
+            events.slice().reverse().map((event) => (
+              <tr key={event.id} className="leak-row">
+                <td>#{event.id}</td>
+                <td className="time-cell">{event.time}</td>
+                <td className="type-cell">{event.type}</td>
+                <td className="location-cell">
+                  <span className={`location-badge ${event.location.toLowerCase()}`}>
+                    {event.location}
+                  </span>
+                </td>
+                <td>{event.confidence}%</td>
+                <td className="action-cell">{event.action}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 const SensorCard = ({ name, value, unit, isAlert, prevValue }: { name: string, value: number, unit: string, isAlert: boolean, prevValue: number }) => {
   const trendUp = value > prevValue;
   const showAlert = isAlert;
@@ -56,6 +106,8 @@ export default function App() {
     leak_type_name: 'NO LEAK', location: 'N/A', action: 'None Required', confidence: '--', is_leak: false
   });
 
+  const [leakEvents, setLeakEvents] = useState<LeakEvent[]>([]);
+
   // Interval for data update
   useEffect(() => {
     const fetchSensorData = async () => {
@@ -78,6 +130,24 @@ export default function App() {
           if (newData.length > 30) newData.shift();
           return newData;
         });
+
+        if (data.prediction.is_leak) {
+          setLeakEvents(prev => {
+            // Only add if it's a new leak occurrence or different from the very last one
+            const lastEvent = prev[prev.length - 1];
+            if (!lastEvent || (lastEvent.type !== data.prediction.leak_type_name || lastEvent.location !== data.prediction.location)) {
+               return [...prev, {
+                 id: prev.length + 1,
+                 time: timeStr,
+                 type: data.prediction.leak_type_name,
+                 location: data.prediction.location,
+                 confidence: data.prediction.confidence,
+                 action: data.prediction.action
+               }];
+            }
+            return prev;
+          });
+        }
 
         setPrediction(data.prediction);
         setLastUpdated(0);
@@ -219,6 +289,9 @@ export default function App() {
               Real-time fluid dynamic pathway simulation
             </div>
           </div>
+
+          <div className="panel-title" style={{marginTop: '1.5rem'}}>Leak Event History</div>
+          <LeakDataTable events={leakEvents} />
         </div>
 
         {/* Right Panel */}

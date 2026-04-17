@@ -358,3 +358,96 @@
   border-radius: 4px;
   padding: 1rem;
 }
+
+/* Leak Data Table */
+.leak-table-container {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.leak-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.leak-table th {
+  background-color: #111;
+  padding: 0.75rem 1rem;
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.leak-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #222;
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.leak-row {
+  transition: background-color 0.2s;
+}
+
+.leak-row:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem !important;
+  font-style: italic;
+}
+
+.time-cell {
+  font-family: monospace;
+  color: #aaa;
+}
+
+.type-cell {
+  font-weight: 600;
+  color: var(--accent-red);
+}
+
+.location-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  background-color: #333;
+}
+
+.location-badge.intake { border: 1px solid #00d2ff; color: #00d2ff; }
+.location-badge.cac { border: 1px solid #ffcc00; color: #ffcc00; }
+.location-badge.exhaust { border: 1px solid #ff3300; color: #ff3300; }
+
+.action-cell {
+  color: var(--text-muted);
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.action-cell:hover {
+  white-space: normal;
+  overflow: visible;
+  background: #111;
+  position: relative;
+  z-index: 5;
+}
