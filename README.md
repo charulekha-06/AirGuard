@@ -66,7 +66,7 @@ Sensor Data → Feature Engineering → Anomaly Detection → Leak Classificatio
 
 ---
 
-## 🧪 Dataset
+##  Dataset
 
 The dataset is **simulation-based** and includes:
 
