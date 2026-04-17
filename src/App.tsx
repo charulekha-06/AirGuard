@@ -295,12 +295,6 @@ export default function App() {
               <Line yAxisId="left" type="monotone" dataKey="EBP" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
               <Line yAxisId="right" type="monotone" dataKey="MAF" stroke="var(--success-green)" strokeWidth={2} dot={false} isAnimationActive={false} />
 
-              {/* Current Scan Position and Analysis Markers (Rendered at end to stay on TOP) */}
-              {historicalData.length > 0 && (
-              <Line yAxisId="left" type="monotone" dataKey="MAP" stroke="var(--accent-red)" strokeWidth={2} dot={false} isAnimationActive={false} />
-              <Line yAxisId="left" type="monotone" dataKey="EBP" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
-              <Line yAxisId="right" type="monotone" dataKey="MAF" stroke="var(--success-green)" strokeWidth={2} dot={false} isAnimationActive={false} />
-
               {/* Current Scan Position and Analysis Markers (RE-FIXED VISIBILITY) */}
               {historicalData.length > 0 && (
                 <>
