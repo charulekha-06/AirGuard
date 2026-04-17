@@ -345,7 +345,7 @@
 
 /* Top Chart */
 .chart-section {
-  height: 250px;
+  height: 400px;
   padding: 1.5rem 2rem 0.5rem 2rem;
   display: flex;
   flex-direction: column;

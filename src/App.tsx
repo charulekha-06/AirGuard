@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AlertTriangle, CheckCircle, ArrowDownRight, ArrowUpRight, ShieldAlert } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
 import './App.css';
 
 // Type definitions
@@ -24,7 +24,8 @@ type PredictionResult = {
 
 type LeakEvent = {
   id: number;
-  time: string;
+  startTime: string;
+  endTime?: string;
   type: string;
   location: string;
   confidence: number | string;
@@ -54,7 +55,7 @@ const LeakDataTable = ({ events }: { events: LeakEvent[] }) => {
             events.slice().reverse().map((event) => (
               <tr key={event.id} className="leak-row">
                 <td>#{event.id}</td>
-                <td className="time-cell">{event.time}</td>
+                <td className="time-cell">{event.startTime}</td>
                 <td className="type-cell">{event.type}</td>
                 <td className="location-cell">
                   <span className={`location-badge ${event.location.toLowerCase()}`}>
@@ -133,17 +134,32 @@ export default function App() {
 
         if (data.prediction.is_leak) {
           setLeakEvents(prev => {
-            // Only add if it's a new leak occurrence or different from the very last one
             const lastEvent = prev[prev.length - 1];
-            if (!lastEvent || (lastEvent.type !== data.prediction.leak_type_name || lastEvent.location !== data.prediction.location)) {
+            // If it's a new leak occurrence or different from the last active one
+            if (!lastEvent || lastEvent.endTime || lastEvent.type !== data.prediction.leak_type_name || lastEvent.location !== data.prediction.location) {
+               // If type/location changed but old one was still active, end it
+               if (lastEvent && !lastEvent.endTime) {
+                 lastEvent.endTime = timeStr;
+               }
                return [...prev, {
                  id: prev.length + 1,
-                 time: timeStr,
+                 startTime: timeStr,
                  type: data.prediction.leak_type_name,
                  location: data.prediction.location,
                  confidence: data.prediction.confidence,
                  action: data.prediction.action
                }];
+            }
+            return prev;
+          });
+        } else {
+          // If leak ended, update the last event's endTime if not already set
+          setLeakEvents(prev => {
+            if (prev.length > 0) {
+              const lastEvent = prev[prev.length - 1];
+              if (!lastEvent.endTime) {
+                return [...prev.slice(0, -1), { ...lastEvent, endTime: timeStr }];
+              }
             }
             return prev;
           });
@@ -231,6 +247,50 @@ export default function App() {
                 itemStyle={{ color: '#fff' }}
               />
               <Legend verticalAlign="top" height={36}/>
+              
+              {/* Leak Event Visual Annotations */}
+              {leakEvents.map(event => {
+                // Determine visibility in current historical window
+                const firstTime = historicalData.length > 0 ? historicalData[0].time : null;
+                const lastTime = historicalData.length > 0 ? historicalData[historicalData.length - 1].time : null;
+                const inWindow = (time: string) => historicalData.some(d => d.time === time);
+                
+                const showLine = inWindow(event.startTime);
+                
+                // For area, we show it if the leak interval overlaps with the historical window
+                // Interval is [startTime, endTime || lastTime]
+                // Simplest way: if startTime is in window OR endTime is in window OR (startTime before window AND (no endTime OR endTime after window))
+                const startIdx = historicalData.findIndex(d => d.time === event.startTime);
+                const endIdx = event.endTime ? historicalData.findIndex(d => d.time === event.endTime) : historicalData.length - 1;
+
+                // If neither in window, and leak didn't span across the window, don't show area
+                const showArea = startIdx !== -1 || endIdx !== -1 || (event.startTime < (firstTime || '') && (!event.endTime || event.endTime > (lastTime || '')));
+
+                return (
+                  <g key={`leak-viz-${event.id}`}>
+                    {showLine && (
+                      <ReferenceLine 
+                        x={event.startTime} 
+                        stroke="var(--accent-red)" 
+                        strokeDasharray="5 5"
+                        label={{ value: 'Leak Detected', position: 'top', fill: 'var(--accent-red)', fontSize: 10, fontWeight: 'bold' }}
+                        isFront={false}
+                      />
+                    )}
+                    {showArea && (
+                      <ReferenceArea 
+                        x1={startIdx !== -1 ? event.startTime : firstTime} 
+                        x2={endIdx !== -1 ? (event.endTime || lastTime) : lastTime} 
+                        fill="var(--accent-red)" 
+                        fillOpacity={0.15} 
+                        stroke="none"
+                        isFront={false}
+                      />
+                    )}
+                  </g>
+                );
+              })}
+
               <Line yAxisId="left" type="monotone" dataKey="MAP" stroke="var(--accent-red)" strokeWidth={2} dot={false} isAnimationActive={false} />
               <Line yAxisId="left" type="monotone" dataKey="EBP" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
               <Line yAxisId="right" type="monotone" dataKey="MAF" stroke="var(--success-green)" strokeWidth={2} dot={false} isAnimationActive={false} />
