@@ -297,25 +297,32 @@ export default function App() {
 
               {/* Current Scan Position and Analysis Markers (Rendered at end to stay on TOP) */}
               {historicalData.length > 0 && (
+              <Line yAxisId="left" type="monotone" dataKey="MAP" stroke="var(--accent-red)" strokeWidth={2} dot={false} isAnimationActive={false} />
+              <Line yAxisId="left" type="monotone" dataKey="EBP" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
+              <Line yAxisId="right" type="monotone" dataKey="MAF" stroke="var(--success-green)" strokeWidth={2} dot={false} isAnimationActive={false} />
+
+              {/* Current Scan Position and Analysis Markers (RE-FIXED VISIBILITY) */}
+              {historicalData.length > 0 && (
                 <>
-                  <ReferenceLine 
-                    x={historicalData[historicalData.length - 1].time} 
-                    stroke="#ffffff" 
-                    strokeWidth={3}
-                    strokeOpacity={1}
-                    label={{ value: 'LIVE SCAN', position: 'insideTopRight', fill: '#ffffff', fontSize: 11, fontWeight: 'bold', offset: 10 }}
-                    isFront={true}
-                  />
-                  {historicalData.length > 1 && (
+                  {/* Neon Cyan Analysis Line - Offset from edge to be clearly visible */}
+                  {historicalData.length > 5 && (
                     <ReferenceLine 
-                      x={historicalData[historicalData.length - 2].time} 
-                      stroke="#00ffff" 
-                      strokeWidth={3}
-                      strokeOpacity={1}
-                      label={{ value: 'ANALYSIS POINT', position: 'insideBottomRight', fill: '#00ffff', fontSize: 11, fontWeight: 'bold' }}
+                      x={historicalData[historicalData.length - 6].time} 
+                      stroke="#ff00ff" 
+                      strokeWidth={4}
+                      strokeDasharray="3 3"
+                      label={{ value: 'AI ANALYSIS POINT', position: 'insideBottomLeft', fill: '#ff00ff', fontSize: 12, fontWeight: 'bold' }}
                       isFront={true}
                     />
                   )}
+                  {/* Bright White Live Scan Line - At the very edge */}
+                  <ReferenceLine 
+                    x={historicalData[historicalData.length - 1].time} 
+                    stroke="#ffffff" 
+                    strokeWidth={4}
+                    label={{ value: 'LIVE INTAKE', position: 'insideTopRight', fill: '#ffffff', fontSize: 12, fontWeight: 'bold' }}
+                    isFront={true}
+                  />
                 </>
               )}
             </LineChart>
