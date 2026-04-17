@@ -291,33 +291,33 @@ export default function App() {
                 );
               })}
 
-              {/* Current Scan Position Line */}
+              <Line yAxisId="left" type="monotone" dataKey="MAP" stroke="var(--accent-red)" strokeWidth={2} dot={false} isAnimationActive={false} />
+              <Line yAxisId="left" type="monotone" dataKey="EBP" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
+              <Line yAxisId="right" type="monotone" dataKey="MAF" stroke="var(--success-green)" strokeWidth={2} dot={false} isAnimationActive={false} />
+
+              {/* Current Scan Position and Analysis Markers (Rendered at end to stay on TOP) */}
               {historicalData.length > 0 && (
                 <>
                   <ReferenceLine 
                     x={historicalData[historicalData.length - 1].time} 
-                    stroke="#fff" 
-                    strokeWidth={2}
-                    strokeOpacity={0.5}
-                    label={{ value: 'LIVE SCAN', position: 'insideTopRight', fill: '#fff', fontSize: 10, fontWeight: 'bold', offset: 10 }}
+                    stroke="#ffffff" 
+                    strokeWidth={3}
+                    strokeOpacity={1}
+                    label={{ value: 'LIVE SCAN', position: 'insideTopRight', fill: '#ffffff', fontSize: 11, fontWeight: 'bold', offset: 10 }}
                     isFront={true}
                   />
                   {historicalData.length > 1 && (
                     <ReferenceLine 
                       x={historicalData[historicalData.length - 2].time} 
-                      stroke="#22d3ee" 
-                      strokeWidth={2}
-                      strokeOpacity={0.8}
-                      label={{ value: 'ANALYSIS POINT', position: 'insideBottomRight', fill: '#22d3ee', fontSize: 10, fontWeight: 'bold' }}
+                      stroke="#00ffff" 
+                      strokeWidth={3}
+                      strokeOpacity={1}
+                      label={{ value: 'ANALYSIS POINT', position: 'insideBottomRight', fill: '#00ffff', fontSize: 11, fontWeight: 'bold' }}
                       isFront={true}
                     />
                   )}
                 </>
               )}
-
-              <Line yAxisId="left" type="monotone" dataKey="MAP" stroke="var(--accent-red)" strokeWidth={2} dot={false} isAnimationActive={false} />
-              <Line yAxisId="left" type="monotone" dataKey="EBP" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
-              <Line yAxisId="right" type="monotone" dataKey="MAF" stroke="var(--success-green)" strokeWidth={2} dot={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>
