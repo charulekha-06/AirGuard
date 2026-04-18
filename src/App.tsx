@@ -272,7 +272,7 @@ export default function App() {
 
         {/* AREA: chart — center middle */}
         <div className="area-chart panel">
-          <div className="panel-title" style={{ borderBottom: 'none' }}>Sensor Trends (MAP, MAF &amp; EBP)</div>
+          <div className="panel-title" style={{ marginTop: '1rem' }}>Sensor Trends</div>
           <div className="chart-container">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={historicalData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
