@@ -31,35 +31,48 @@ type LeakEvent = {
   action: string;
 };
 
-const LeakDataTable = ({ events }: { events: LeakEvent[] }) => (
-  <div className="leak-table-container">
-    <table className="leak-table">
-      <thead>
-        <tr>
-          <th>ID</th><th>Time</th><th>Type</th><th>Location</th><th>Confidence</th><th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {events.length === 0 ? (
-          <tr><td colSpan={6} className="empty-state">No leaks detected in the current session</td></tr>
-        ) : (
-          events.slice().reverse().map((event) => (
-            <tr key={event.id} className="leak-row">
-              <td>#{event.id}</td>
-              <td className="time-cell">{event.startTime}</td>
-              <td className="type-cell">{event.type}</td>
-              <td className="location-cell">
-                <span className={`location-badge ${event.location.toLowerCase()}`}>{event.location}</span>
-              </td>
-              <td>{event.confidence}%</td>
-              <td className="action-cell">{event.action}</td>
-            </tr>
-          ))
-        )}
-      </tbody>
-    </table>
-  </div>
-);
+const LeakDataTable = ({ events }: { events: LeakEvent[] }) => {
+  const calculateDuration = (startTime: string, endTime?: string) => {
+    const parseTime = (timeStr: string) => {
+      const [h, m, s] = timeStr.split(':').map(Number);
+      return h * 3600 + m * 60 + s;
+    };
+    const start = parseTime(startTime);
+    const end = endTime ? parseTime(endTime) : parseTime(`${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`);
+    const diff = end - start;
+    const minutes = Math.floor(diff / 60);
+    const seconds = diff % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div className="leak-table-container">
+      <table className="leak-table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Leak Event</th><th>Duration</th><th>Type</th><th>Confidence</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {events.length === 0 ? (
+            <tr><td colSpan={6} className="empty-state">No leaks detected in the current session</td></tr>
+          ) : (
+            events.slice().reverse().map((event) => (
+              <tr key={event.id} className="leak-row">
+                <td>#{event.id}</td>
+                <td className="event-cell">{event.startTime} at <span className={`location-badge ${event.location.toLowerCase()}`}>{event.location}</span></td>
+                <td className="duration-cell">{calculateDuration(event.startTime, event.endTime)}</td>
+                <td className="type-cell">{event.type}</td>
+                <td>{event.confidence}%</td>
+                <td className="action-cell">{event.action}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 const SensorCard = ({ name, value, unit, isAlert, prevValue }: {
   name: string; value: number; unit: string; isAlert: boolean; prevValue: number;
@@ -106,25 +119,27 @@ export default function App() {
 
         setCurrentSensors(prev => { if (prev) setPrevSensors(prev); return newVals; });
         setHistoricalData(prev => { const n = [...prev, newVals]; if (n.length > 30) n.shift(); return n; });
-
-        if (data.prediction.is_leak) {
-          setLeakEvents(prev => {
-            const last = prev[prev.length - 1];
+        setLeakEvents(prev => {
+          const last = prev[prev.length - 1];
+          if (data.prediction.is_leak) {
             if (!last || last.endTime || last.type !== data.prediction.leak_type_name || last.location !== data.prediction.location) {
-              if (last && !last.endTime) last.endTime = timeStr;
-              return [...prev, { id: prev.length + 1, startTime: timeStr, type: data.prediction.leak_type_name, location: data.prediction.location, confidence: data.prediction.confidence, action: data.prediction.action }];
+              const nextEvents = [...prev, {
+                id: prev.length + 1,
+                startTime: timeStr,
+                type: data.prediction.leak_type_name,
+                location: data.prediction.location,
+                confidence: data.prediction.confidence,
+                action: data.prediction.action,
+              }];
+              return nextEvents.length > 100 ? nextEvents.slice(nextEvents.length - 100) : nextEvents;
             }
             return prev;
-          });
-        } else {
-          setLeakEvents(prev => {
-            if (prev.length > 0) {
-              const last = prev[prev.length - 1];
-              if (!last.endTime) return [...prev.slice(0, -1), { ...last, endTime: timeStr }];
-            }
-            return prev;
-          });
-        }
+          }
+          if (last && !last.endTime) {
+            return [...prev.slice(0, -1), { ...last, endTime: timeStr }];
+          }
+          return prev;
+        });
         setPrediction(data.prediction);
         setLastUpdated(0);
       } catch (e) {
@@ -172,10 +187,6 @@ export default function App() {
       <nav className="navbar">
         <div className={`brand ${isLeakDetected ? 'alert' : ''}`}>AirGuard AI</div>
         <div className="sys-status-wrapper">
-          <div className="status-indicator">
-            <div className={`status-dot ${isLeakDetected ? 'alert alert-text-blink' : 'normal'}`}></div>
-            {isLeakDetected ? 'AI ALERT ACTIVE' : 'SYSTEM NORMAL'}
-          </div>
           <div className="timestamp">Last Updated: {lastUpdated} sec ago</div>
         </div>
       </nav>
@@ -304,7 +315,7 @@ export default function App() {
             </ResponsiveContainer>
           </div>
 
-          <div className="panel-subtitle">Leak Event History</div>
+          <div className="panel-subtitle">Leak Event History ({leakEvents.length} events)</div>
           <LeakDataTable events={leakEvents} />
         </div>
 
